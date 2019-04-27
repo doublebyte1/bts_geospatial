@@ -15,3 +15,5 @@ signif.txt:
 - Street-level crime data from Surrey Police (August, 2015). UK Home Office (data.police.uk)
 ne_10m_populated_places_simple.zip:
 - Populated places layer from Natural Earth. Free vector and raster map data @ naturalearthdata.com.
+lifeexpectancy.zip:
+-  Life Expectancy GIS Grid data from the human impact dataset.  Center for Sustainability and the Global Environment (SAGE) at the University of Wisconsin-Madison: http://nelson.wisc.edu/sage/index.php
