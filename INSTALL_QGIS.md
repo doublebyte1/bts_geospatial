@@ -4,7 +4,7 @@
 
 This document describes the steps to install QGIS v3 in your system.
 The recommended approach is to [install it natively in your platform](#native-installation).
-If that does not work, you may try to [run QGIS in a docker container](#use-docker). If none of these methods work, you may try to [run QGIS whithin a virtualbox image](#use-virtual-box).
+If that does not work, you may try to [run QGIS in a docker container](#use-docker). If none of these methods work, you may try to [run QGIS whithin a virtualbox image](#use-virtualbox).
 
 ## Native Installation
 
@@ -33,6 +33,7 @@ Or download it directly from [here](https://raw.githubusercontent.com/doublebyte
 Run the script to start QGIS.
 
 ## Use virtualbox
+
 If nothing else works, download the [OSGeo Live](https://live.osgeo.org/en/download.html) virtual machine. The direct link is [here](https://sourceforge.net/projects/osgeo-live/files/12.0/osgeolive-12.0-vm.7z/download).
 
 Install [virtualbox](https://www.virtualbox.org/) and [follow these instructions](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html) to get OSGeo Live running on your system.
