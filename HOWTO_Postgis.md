@@ -13,6 +13,7 @@
       - [Point](#point)
       - [Linestring](#linestring)
       - [Polygons](#polygons)
+    + [Collections](#collections)
     + [Geometry I/O](#geometry-i-o)
     + [Querying geometry in our dataset](#querying-geometry-in-our-dataset)
   * [Spatial relationships](#spatial-relationships)
@@ -29,12 +30,17 @@
     + [Projection exercises](#projection-exercises)
     + [Geography versus geometry](#geography-versus-geometry)
   * [Geometry construction functions](#geometry-construction-functions)
+    + [ST_Centroid / ST_PointOnSurface](#st-centroid---st-pointonsurface)
     + [Buffer](#buffer)
     + [Intersection and union](#intersection-and-union)
   * [More spatial joins](#more-spatial-joins)
     + [Join attributes to spatial Data](#join-attributes-to-spatial-data)
     + [Spatial join exercise](#spatial-join-exercise)
   * [Homework](#homework)
+- [License](#license)
+  * [Reference Information](#reference-information)
+    + [Geometry Function List](#geometry-function-list)
+    + [Spatial Relationship Function List](#spatial-relationship-function-list)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
