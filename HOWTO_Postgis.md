@@ -41,6 +41,8 @@
 
 ## Get the infrastructure up & running
 
+[Geocontainers]
+
 Run a docker container, based on the [mdillon/postgis](https://hub.docker.com/r/mdillon/postgis) image.
 
 ```bash
@@ -58,6 +60,8 @@ Enter postgres client:
 ```bash
 psql -U postgres
 ```
+
+[Quick PostgreSQL & SQL review]
 
 ## Create & fill database
 ### Create database
@@ -179,22 +183,37 @@ INSERT INTO geometries VALUES
 SELECT name, ST_AsText(geom) FROM geometries;
 ```
 
+In conformance with the Simple Features for SQL (SFSQL) specification, PostGIS provides two tables to track and report on the geometry types available in a given database.
+
+* The first table, spatial_ref_sys, defines all the spatial reference systems known to the database and will be described in greater detail later.
+* The second table (actually, a view), geometry_columns, provides a listing of all “features” (defined as an object with geometric attributes), and the basic details of those features.
+
+
+![table relationships](./table01.png)
+
 View geometry columns:
 
 ```SQL
 SELECT * FROM geometry_columns;
 ```
 
-View geometry metadata:
+Our example table contains a mixture of different geometry types. We can collect general information about each object using functions that read the geometry metadata.
+
+* `ST_GeometryType(geometry)`: returns the type of the geometry.
+* `ST_NDims(geometry)`: returns the number of dimensions of the geometry.
+* `ST_SRID(geometry)`: returns the spatial reference identifier number of the geometry.
+
 
 ```SQL
 SELECT name, ST_GeometryType(geom), ST_NDims(geom), ST_SRID(geom)
   FROM geometries;
 ```
 
-[SF]
-
 #### Point
+A **spatial point** represents a single location on the Earth.
+* A point is represented by a single coordinate (including either 2-, 3- or 4-dimensions).
+* Points are used to represent objects when the exact details, such as shape and size, are not important at the target scale. For example, cities on a map of the world can be described as points, while a map of a single state might represent cities as polygons.
+
 ![points](./points.png)
 
 Introducing point:
@@ -216,6 +235,13 @@ SELECT name, ST_AsText(geom)
   LIMIT 1;
 ```
 #### Linestring
+A **linestring** is a path between locations.
+* It takes the form of an ordered series of two or more points.
+* Roads and rivers are typically represented as linestrings.
+* A linestring is said to be closed if it starts and ends on the same point.
+* It is said to be simple if it does not cross or touch itself (except at its endpoints if it is closed).
+* A linestring can be both closed and simple.
+
 ![lines](./lines.png)
 
 Introducing Linestring:
@@ -233,6 +259,13 @@ SELECT ST_Length(geom)
 ```
 
 #### Polygons
+A **polygon** is a representation of an area.
+* The outer boundary of the polygon is represented by a ring.
+* This ring is a linestring that is both closed and simple as defined above.
+* Holes within the polygon are also represented by rings.
+
+Polygons are used to represent objects whose size and shape are important. City limits, parks, building footprints or bodies of water are all commonly represented as polygons when the scale is sufficiently high to see their area. Roads and rivers can sometimes be represented as polygons.
+
 ![polygons](./polygons.png)
 
 Introducing polygon:
@@ -250,6 +283,16 @@ SELECT name, ST_Area(geom)
 ```
 
 ![polygons](./polygons1.png)
+
+### Collections
+There are four collection types, which group multiple simple geometries into sets.
+* MultiPoint, a collection of points.
+* MultiLineString, a collection of linestrings.
+* MultiPolygon, a collection of polygons GeometryCollection, a heterogeneous collection of any geometry (including other collections).
+
+Collections are another concept that shows up in GIS software more than in generic graphics software. They are useful for directly modeling real world objects as spatial objects. 
+
+![collection2](./collection2.png)
 
 Introducing geometry collections:
 ```SQL
@@ -281,6 +324,8 @@ Try as GeoJSON, GML and KML(srid):
 SELECT ST_AsGeoJSON(ST_GeometryFromText('LINESTRING(0 0 0,1 0 0,1 1 2)'));
 SELECT ST_AsGML(ST_GeometryFromText('LINESTRING(0 0 0,1 0 0,1 1 2)'));
 ```
+
+Check the [function list](###geometry-function-list).
 
 ### Querying geometry in our dataset
 
@@ -360,13 +405,6 @@ FROM nyc_neighborhoods
 WHERE ST_Intersects(geom, ST_GeomFromText('POINT(583571 4506714)',26918));
 ```
 
-In one go:
-```SQL
-SELECT a.name, a.boroname, b.geom
-FROM nyc_neighborhoods a, nyc_subway_stations b
-WHERE ST_Intersects(a.geom, b.geom) and b.name= 'Broad St';
-```
-
 ### Distance (ST_Distance)
 
 ```SQL
@@ -388,6 +426,7 @@ WHERE ST_DWithin(
         10
       );
 ```
+Check the [function list](###spatial-relationship-function-list).
 
 ### Spatial relationship exercises
 
@@ -406,6 +445,11 @@ WHERE ST_DWithin(
 [Spatial Joins]
 
 *Which neighborhood is the ‘Broad St’ station in?*
+
+In the previous section, we explored spatial relationships using a two-step process: first we extracted a subway station point for ‘Broad St’; then, we used that point to ask further questions such as “what neighborhood is the ‘Broad St’ station in?”
+
+Using a spatial join, we can answer the question in one step, retrieving information about the subway station and the neighborhood that contains it:
+
 ```SQL
 SELECT
   subways.name AS subway_name,
@@ -418,6 +462,9 @@ WHERE subways.name = 'Broad St';
 ```
 
 Join and summarize:
+
+The combination of a JOIN with a GROUP BY provides the kind of analysis that is usually done in a GIS system.
+
 *What is the population and racial make-up of the neighborhoods of Manhattan?*
 ```SQL
 SELECT
@@ -656,8 +703,15 @@ ST_Distance(
 [Why not use geography?]
 
 ## Geometry construction functions
+"Geometry constructing functions" take geometries as inputs and output new shapes.
 
-[Geometries as the result of query: ST_Centroid / ST_PointOnSurface]
+### ST_Centroid / ST_PointOnSurface
+A common need when composing a spatial query is to replace a polygon feature with a point representation of the feature.
+
+* ST_Centroid(geometry) returns a point that is approximately on the center of mass of the input argument. This simple calculation is very fast, but sometimes not desirable, because the returned point is not necessarily in the feature itself. If the input feature has a convexity (imagine the letter ‘C’) the returned centroid might not be in the interior of the feature.
+* ST_PointOnSurface(geometry) returns a point that is guaranteed to be inside the input argument. It is substantially more computationally expensive than the centroid operation.
+
+![centroid](./centroid.jpg)
 
 ### Buffer
 
@@ -783,6 +837,7 @@ ON g.tractid = a.tractid;
 ```
 
 View in qgis.
+
 [Display  pie charts]
 
 ### Spatial join exercise
@@ -795,3 +850,88 @@ Do a similar analysis for the income. Try answering this question with one,or mo
 *what are the top neigbourhoods in NY where people have the best income?*
 
 Represent the results on the map.
+
+# License
+This work, "Introduction to Spatial Queries", is a derivative of "Introduction to PostGIS" by Boundless, used under Creative Commons Attribution-Share Alike 3.0. "Introduction to Spatial Queries" is licensed under CC BY by [@doublebyte1](https://github.com/doublebyte1/).
+
+## Reference Information
+### Geometry Function List
+
+ST_Area: Returns the area of the surface if it is a polygon or multi-polygon. For “geometry” type area is in SRID units. For “geography” area is in square meters.
+
+ST_AsText: Returns the Well-Known Text (WKT) representation of the geometry/geography without SRID metadata.
+
+ST_AsBinary: Returns the Well-Known Binary (WKB) representation of the geometry/geography without SRID meta data.
+
+ST_EndPoint: Returns the last point of a LINESTRING geometry as a POINT.
+
+ST_AsEWKB: Returns the Well-Known Binary (WKB) representation of the geometry with SRID meta data.
+
+ST_AsEWKT: Returns the Well-Known Text (WKT) representation of the geometry with SRID meta data.
+
+ST_AsGeoJSON: Returns the geometry as a GeoJSON element.
+
+ST_AsGML: Returns the geometry as a GML version 2 or 3 element.
+
+ST_AsKML: Returns the geometry as a KML element. Several variants. Default version=2, default precision=15.
+
+ST_AsSVG: Returns a Geometry in SVG path data given a geometry or geography object.
+
+ST_ExteriorRing: Returns a line string representing the exterior ring of the POLYGON geometry. Return NULL if the geometry is not a polygon. Will not work with MULTIPOLYGON
+
+ST_GeometryN: Returns the 1-based Nth geometry if the geometry is a GEOMETRYCOLLECTION, MULTIPOINT, MULTILINESTRING, MULTICURVE or MULTIPOLYGON. Otherwise, return NULL.
+
+ST_GeomFromGML: Takes as input GML representation of geometry and outputs a PostGIS geometry object.
+
+ST_GeomFromKML: Takes as input KML representation of geometry and outputs a PostGIS geometry object
+
+ST_GeomFromText: Returns a specified ST_Geometry value from Well-Known Text representation (WKT).
+
+ST_GeomFromWKB: Creates a geometry instance from a Well-Known Binary geometry representation (WKB) and optional SRID.
+
+ST_GeometryType: Returns the geometry type of the ST_Geometry value.
+
+ST_InteriorRingN: Returns the Nth interior linestring ring of the polygon geometry. Return NULL if the geometry is not a polygon or the given N is out of range.
+
+ST_Length: Returns the 2d length of the geometry if it is a linestring or multilinestring. geometry are in units of spatial reference and geography are in meters (default spheroid)
+
+ST_NDims: Returns coordinate dimension of the geometry as a small int. Values are: 2,3 or 4.
+
+ST_NPoints: Returns the number of points (vertexes) in a geometry.
+
+ST_NRings: If the geometry is a polygon or multi-polygon returns the number of rings.
+
+ST_NumGeometries: If geometry is a GEOMETRYCOLLECTION (or MULTI*) returns the number of geometries, otherwise return NULL.
+
+ST_Perimeter: Returns the length measurement of the boundary of an ST_Surface or ST_MultiSurface value. (Polygon, Multipolygon)
+
+ST_SRID: Returns the spatial reference identifier for the ST_Geometry as defined in spatial_ref_sys table.
+
+ST_StartPoint: Returns the first point of a LINESTRING geometry as a POINT.
+
+ST_X: Returns the X coordinate of the point, or NULL if not available. Input must be a point.
+
+ST_Y: Returns the Y coordinate of the point, or NULL if not available. Input must be a point.
+
+### Spatial Relationship Function List
+
+ST_Contains(geometry A, geometry B): Returns true if and only if no points of B lie in the exterior of A, and at least one point of the interior of B lies in the interior of A.
+
+ST_Crosses(geometry A, geometry B): Returns TRUE if the supplied geometries have some, but not all, interior points in common.
+
+ST_Disjoint(geometry A , geometry B): Returns TRUE if the Geometries do not “spatially intersect” - if they do not share any space together.
+
+ST_Distance(geometry A, geometry B): Returns the 2-dimensional cartesian minimum distance (based on spatial ref) between two geometries in projected units.
+
+ST_DWithin(geometry A, geometry B, radius): Returns true if the geometries are within the specified distance (radius) of one another.
+
+ST_Equals(geometry A, geometry B): Returns true if the given geometries represent the same geometry. Directionality is ignored.
+
+ST_Intersects(geometry A, geometry B): Returns TRUE if the Geometries/Geography “spatially intersect” - (share any portion of space) and FALSE if they don’t (they are Disjoint).
+
+ST_Overlaps(geometry A, geometry B): Returns TRUE if the Geometries share space, are of the same dimension, but are not completely contained by each other.
+
+ST_Touches(geometry A, geometry B): Returns TRUE if the geometries have at least one point in common, but their interiors do not intersect.
+
+ST_Within(geometry A , geometry B): Returns true if the geometry A is completely inside geometry B
+
