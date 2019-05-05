@@ -17,6 +17,10 @@ ne_10m_populated_places_simple.zip:
 - Populated places layer from Natural Earth. Free vector and raster map data @ naturalearthdata.com.
 lifeexpectancy.zip:
 -  Life Expectancy GIS Grid data from the human impact dataset.  Center for Sustainability and the Global Environment (SAGE) at the University of Wisconsin-Madison: http://nelson.wisc.edu/sage/index.php
+World_Countries.rar:
+- World Countries: Shapefile with the countries of the world. https://tapiquen-sig.jimdo.com/english-version/free-downloads/world/
+ne_10m_coastline.zip:
+- Ocean coastline, including major islands. Coastline is matched to land and water polygons. The Caspian Sea, which is technically a lake, is included. The ocean coastline, the foundation for building all of NEV, primarily derives from World Data Bank 2 with modest generalization applied via line simplification in Adobe Illustrator. The Antarctica coast derives from NASA Mosaic of Antarctica.
 nyc_census_data.zip:
 - New York City Census Data
 nyc_data_dictionary.pdf:
