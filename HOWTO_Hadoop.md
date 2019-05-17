@@ -8,6 +8,8 @@ In this tutorial, we instantiate an Hadoop cluster on AWS, and add the [spatial 
 - [Query data on hive](#query-data-on-hive)
 - [Run a hive script](#run-a-hive-script)
 - [Aggregate csv data](#aggregate-csv-data)
+- [License](#license)
+- [Homework](#homework)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -305,3 +307,24 @@ Query data:
 ```sql
 select ST_AsGeoJSON(area), count from taxi_agg limit 10;
 ```
+
+**Be sustainable:** do not forget to terminate the cluster, when your're done ($$$). 
+
+# Homework
+
+Sometimes the results of a spatial query, are **non-spatial**.
+
+[Previously](#query-data-on-hive), we have calculated the number of earthquakes per county, in California. However these values are difficult to interpret, because they are absolute. 
+
+The goal of this exercise is to **calculate the proportion of earthquakes, in each county of California**.
+
+* Re-use the datasets from the previous exercise: counties and earthquakes.
+* Use one or more queries, to evaluate the proportion of earthquakes in each county, with regard to the **total number of earthquakes in Californian counties**.
+* The final result should be a a list with two columns: county name and proportion of earthquakes. The second column should sum either 100 or 1.
+* You can also produce a diagram for presenting the results (e.g.: pie chart, histogram).
+* Create a brief report describing the process, and presenting the results. Do not forget to **interpret the results**. 
+* Be sustainable: do not forget to terminate your cluster, after use.
+
+
+# License
+This work, is a derivative of "gis-tools-for-hadoop" by ESRI, used under the Apache License, Version 2.0. "Introduction to Big Spatial Queries" is licensed under Apache 2.0 by [@doublebyte1](https://github.com/doublebyte1/).
