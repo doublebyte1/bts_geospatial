@@ -304,4 +304,4 @@ create temporary function ST_AsGeoJSON as 'com.esri.hadoop.hive.ST_AsGeoJson';
 Query data:
 ```sql
 select ST_AsGeoJSON(area), count from taxi_agg limit 10;
-```sql
+```
