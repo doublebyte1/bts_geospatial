@@ -1,4 +1,4 @@
-![QGIS](et4h.jpeg)
+![GIS tools for hadoop](et4h.jpeg)
 
 # Introduction to Big Spatial Queries
 In this tutorial, we instantiate an Hadoop cluster on AWS, and add the [spatial extension from ESRI](http://esri.github.io/gis-tools-for-hadoop/). We present two use cases, both involving loading large datasets from csv files, using hive. The first use case, is a point in polygon aggregation, for aggregating earthquakes in counties. The second use case is a spatial bining of taxi trips.
