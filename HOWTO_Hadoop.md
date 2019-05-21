@@ -133,7 +133,7 @@ ORDER BY cnt desc;
 
 ```sql
 set hive.strict.checks.cartesian.product;
-hive.strict.checks.cartesian.product=true;
+set hive.strict.checks.cartesian.product=true;
 set hive.strict.checks.cartesian.product;
 ```
 
