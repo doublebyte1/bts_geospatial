@@ -33,8 +33,8 @@ Follow the ssh instructions to access the cluster
 Install git:
 
 ```bash
-yum update
-yum install git
+sudo yum update
+sudo yum install git
 ```
 
 Clone gis tools for Hadoop:
