@@ -208,7 +208,7 @@ hadoop fs -ls taxidemo
 
 View schema:
 ```bash
-head -2 trip_data_1.csv > header_taxi.csv
+head -2 gis-tools-for-hadoop/samples/data/taxi-data/trip_data_1.csv > header_taxi.csv
 ```
 
 Enter hive.
