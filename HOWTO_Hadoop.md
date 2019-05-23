@@ -118,6 +118,7 @@ OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat';
 Load data into the respective tables:
 ```sql
 LOAD DATA INPATH 'earthquake-demo/earthquake-data/earthquakes.csv' OVERWRITE INTO TABLE earthquakes;
+LOAD DATA INPATH 'earthquake-demo/counties-data/california-counties.json' OVERWRITE INTO TABLE counties;
 ```
 
 Do the same thing for counties.
@@ -267,8 +268,8 @@ Create the temporary functions that will be used in aggregating bins:
 
 Try out the aggregation:
 ```sql
-FROM (SELECT ST_Bin(1/1000, ST_Point(dropoff_longitude,dropoff_latitude)) bin_id, *FROM taxi_demo) bins
-SELECT ST_BinEnvelope(1/1000, bin_id) shape,
+FROM (SELECT ST_Bin(1e-3, ST_Point(dropoff_longitude,dropoff_latitude)) bin_id, *FROM taxi_demo) bins
+SELECT ST_BinEnvelope(1e-3, bin_id) shape,
 COUNT(*) count
 GROUP BY bin_id;
 ```
@@ -290,9 +291,9 @@ OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat';
 
 Rerun the query, and save the results to the new table taxi_agg:
 ```sql
-FROM (SELECT ST_Bin(1/1000, ST_Point(dropoff_longitude,dropoff_latitude)) bin_id, *FROM taxi_demo) bins
+FROM (SELECT ST_Bin(1e-3, ST_Point(dropoff_longitude,dropoff_latitude)) bin_id, *FROM taxi_demo) bins
 INSERT OVERWRITE TABLE taxi_agg
-SELECT ST_BinEnvelope(1/1000, bin_id) shape, COUNT(*) count
+SELECT ST_BinEnvelope(1e-3, bin_id) shape, COUNT(*) count
 GROUP BY bin_id;
 ```
 

@@ -20,7 +20,7 @@
     + [Equality (ST_Equals)](#equality--st-equals-)
     + [Intersection (ST_Intersects)](#intersection--st-intersects-)
     + [Distance (ST_Distance)](#distance--st-distance-)
-    + [Whithin (ST_DWithin)](#whithin--st-dwithin-)
+    + [DWhithin (ST_DWithin)](#whithin--st-dwithin-)
     + [Spatial relationship exercises](#spatial-relationship-exercises)
   * [Spatial joins](#spatial-joins)
     + [Advanced joins](#advanced-joins)
@@ -419,7 +419,7 @@ SELECT ST_Distance(
   ST_GeometryFromText('LINESTRING(-2 2, 2 2)'));
 ```
 
-### Whithin (ST_DWithin)
+### DWhithin (ST_DWithin)
 
 ![st_dwithin](./st_dwithin.png)
 
