@@ -27,3 +27,7 @@ nyc_census_data.zip:
 - New York City Census Data
 nyc_data_dictionary.pdf:
 - Information about the NYC census data.
+ward-atlas-data.csv:
+- Ward Profiles and Atlas from the GLA: https://data.london.gov.uk/dataset/ward-profiles-and-atlas
+London_Ward.zip:
+Shapefiles with the definition of the London wards.
