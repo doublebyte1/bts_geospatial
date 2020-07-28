@@ -47,12 +47,14 @@
 
 ## Get the infrastructure up & running
 
+First of all, **uncompress nyc_census_data.zip and move it to an accessible folder**. Cd into that folder.
+
 [Geocontainers]
 
 Run a docker container, based on the [mdillon/postgis](https://hub.docker.com/r/mdillon/postgis) image.
 
 ```bash
-docker run --name some-postgis -p5432:5432 -v /postgres-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=mysecretpassword -v "$PWD":/tmp -d mdillon/postgis
+docker run --name some-postgis -p5432:5432 -v /postgis-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=mysecretpassword -v "$PWD":/tmp -d mdillon/postgis
 ```
 
 Enter the container:
@@ -96,9 +98,20 @@ SELECT postgis_full_version();
 
 ### Load census data
 
-Uncompress nyc_census_data.zip and move it to an accessible folder.
+Cd to the /tmp directory whithin the container, which is where we have the data.
+
+Optional:
+Install gdal
+
+```bash
+apt-get update && apt-get install gdal-bin
+```
 
 Check the SRID of the files, using ogrinfo.
+
+```bash
+ogrinfo nyc_census_blocks.shp nyc_census_blocks -so
+```
 
 Import data using [shp2pgsql](https://www.bostongis.com/pgsql2shp_shp2pgsql_quickguide.bqg):
 
@@ -309,7 +322,7 @@ SELECT name, ST_AsText(geom)
 
 Functions which apply to collections:
 ```SQL
-SELECT ST_NumGeometries(geometry)
+SELECT ST_NumGeometries(geom)
   FROM geometries
   WHERE name = 'Linestring';
 ```
