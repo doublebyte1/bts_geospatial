@@ -623,7 +623,7 @@ VACUUM ANALYZE nyc_census_blocks;
 
 Get SRID:
 ```SQL
-SELECT ST_SRID(geom) FROM nyc_streets LIMIT 1;
+SELECT distinct ST_SRID(geom) FROM nyc_streets;
 ```
 
 Extend information about the SRID:
